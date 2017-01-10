@@ -14,40 +14,42 @@ var publicPath = webpackServer + '/bundled/';
 var bundlePath = path.join(__dirname, 'dist', 'js');
 
 module.exports = {
-    devtool: 'source-map',
-    entry: {
-        app: [
-            'webpack-dev-server/client?' + webpackServer,
-            'webpack/hot/only-dev-server',
-            './redux-saga-examples/app.js'
-        ]
-    },
-    output: {
-        path: bundlePath,
-        filename: '[name].bundle.js',
-        publicPath: publicPath
-    },
-    module: {
-        loaders: [{ test: /\.jsx?$/, exclude: /node_modules/, loaders: ['babel'] }]
-    },
-    resolve: {
-        alias: {
-            react: 'react'
-        },
-        // so we can import things other than .js files with the extension
-        extensions: ['', '.js', '.jsx', '.json'],
-        modulesDirectories: [
-            'node_modules'
-        ]
-    },
-    devServer: {
-        headers: {
-            'Access-Control-Allow-Origin': devServer,
-            'Access-Control-Allow-Credentials': true
-        }
-    },
-    plugins: [
-        new webpack.DefinePlugin({ 'process.env.NODE_ENV': JSON.stringify('development') }),
-        new webpack.HotModuleReplacementPlugin()
+  devtool: 'source-map',
+  entry: {
+    app: [
+      'webpack-dev-server/client?' + webpackServer,
+      'webpack/hot/only-dev-server',
+      './redux-saga-examples/app.js'
     ]
+  },
+  output: {
+    path: bundlePath,
+    filename: '[name].bundle.js',
+    publicPath: publicPath
+  },
+  module: {
+    loaders: [{ test: /\.jsx?$/, exclude: /node_modules/, loaders: ['babel'] }]
+  },
+  resolve: {
+    alias: {
+      react: 'react'
+    },
+    // so we can import things other than .js files with the extension
+    extensions: ['', '.js', '.jsx', '.json'],
+    modulesDirectories: [
+      'node_modules'
+    ]
+  },
+  devServer: {
+    headers: {
+      'Access-Control-Allow-Origin': devServer,
+      'Access-Control-Allow-Credentials': true
+    }
+  },
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify('development')
+    }),
+    new webpack.HotModuleReplacementPlugin()
+  ]
 };

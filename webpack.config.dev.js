@@ -5,7 +5,7 @@ var path = require('path');
 var webpack = require('webpack');
 
 // address the project's web server will be accessible at, typically http://localhost:8000 for django
-var devServer = 'http://localhost:8000';
+var devServer = 'http://localhost:8001';
 // address webpack-dev-server will be accessible at, typically http://localhost:8080 for local dev
 var webpackServer = 'http://localhost:8080';
 // address/path that js bundles will be accessible at

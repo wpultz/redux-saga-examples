@@ -7,7 +7,7 @@ var dictionaryKeys = JSON.parse(fs.readFileSync('dictionary.keys', 'utf-8'))
 
 var app = express();
 
-app.get('/', function(req, res) {
+app.get(['/', '/thunks', '/sagas'], function(req, res) {
   res.sendFile(path.join(__dirname, 'app.html'));
 });
 
@@ -39,4 +39,4 @@ app.get('/definition/:word', function(req, res) {
   oxfordReq.end()
 })
 
-app.listen(8000)
+app.listen(8001)

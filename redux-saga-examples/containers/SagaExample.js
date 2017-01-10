@@ -32,7 +32,6 @@ class MainContainer extends React.Component {
 
     // chaining thunks in this fashion isn't the worst thing ever
     fetchRandomWord().then(word => {
-      console.log(word)
       fetchDefinition(word)
     })
   }

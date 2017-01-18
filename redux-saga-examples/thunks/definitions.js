@@ -1,5 +1,6 @@
 import 'isomorphic-fetch'
-import serializeError from 'serialize-error'
+
+import * as api from '../api'
 
 import {
   randomWordRequest, randomWordSuccess, randomWordFailure,
@@ -7,19 +8,17 @@ import {
 } from '../actions'
 
 
-
 export const fetchRandomWord = () => {
   return (dispatch) => {
     dispatch(randomWordRequest())
 
-    return fetch('http://www.setgetgo.com/randomword/get.php')
-      .then(resp => resp.text())
+    return api.fetchRandomWord()
       .then(word => {
         dispatch(randomWordSuccess(word))
         return word
       })
       .catch(err => {
-        dispatch(randomWordFailure(serializeError(err)))
+        dispatch(randomWordFailure(err))
       })
   }
 }
@@ -29,30 +28,23 @@ export const fetchDefinition = word => {
   return (dispatch) => {
     dispatch(definitionRequest())
 
-    return fetch('/definition/' + word)
-      .then(resp => resp.text())
-      .then(txtResp => {
-        const parsedResponse = JSON.parse(txtResp)
-
-        // this is intentionally lax in it's validation. if we can't get that data out of the response, let the catch
-        // pick up the exception and dispatch the error action
-        const definition = parsedResponse.results[0].lexicalEntries[0].entries[0].senses[0].definitions[0]
+    return api.fetchDefinition(word)
+      .then(definition => {
         dispatch(definitionSuccess(word, definition))
       })
       .catch(err => {
-        dispatch(definitionFailure(word, serializeError(err)))
+        dispatch(definitionFailure(word, err))
       })
   }
 }
 
 
-// this is bad, there is too much going on here
+// this is bad, lots of `then`ing and callbacks
 export const fetchRandomWordPlus = () => {
   return (dispatch) => {
     dispatch(randomWordRequest())
 
-    return fetch('http://www.setgetgo.com/randomword/get.php')
-      .then(resp => resp.text())
+    return dispatch(fetchRandomWord())
       .then(word => {
         dispatch(randomWordSuccess(word))
         // this is where things have started to go downhill
@@ -60,7 +52,7 @@ export const fetchRandomWordPlus = () => {
         dispatch(fetchDefinition(word))
       })
       .catch(err => {
-        dispatch(randomWordFailure(serializeError(err)))
+        dispatch(randomWordFailure(err))
       })
   }
 }

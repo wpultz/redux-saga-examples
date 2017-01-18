@@ -13,6 +13,11 @@ const word = (state = Map({ error: false, word: '' }), action) => {
         .set('error', true)
         .set('word', '');
 
+    case 'DEFINITION_SUCCESS':
+      return state
+        .set('error', false)
+        .set('word', action.payload.word)
+
     default:
       return state;
   }

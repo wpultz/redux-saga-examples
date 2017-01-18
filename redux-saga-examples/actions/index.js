@@ -1,3 +1,5 @@
+import serializeError from 'serialize-error'
+
 export const randomWordRequest = () => ({
   type: 'RANDOM_WORD_REQUEST'
 })
@@ -11,7 +13,9 @@ export const randomWordSuccess = word => ({
 
 export const randomWordFailure = err => ({
   type: 'RANDOM_WORD_FAILURE',
-  payload: err
+  payload: {
+    error: serializeError(err)
+  }
 })
 
 
@@ -34,6 +38,6 @@ export const definitionFailure = (word, err) => ({
   type: 'DEFINITION_FAILURE',
   payload: {
     word,
-    err
+    error: serializeError(err)
   }
 })

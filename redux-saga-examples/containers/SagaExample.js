@@ -1,8 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { fetchRandomWord, fetchDefinition, fetchRandomWordPlus } from '../thunks/definitions'
-
 class MainContainer extends React.Component {
   constructor() {
     super();
@@ -10,30 +8,33 @@ class MainContainer extends React.Component {
     this.handleFetchWord = ::this.handleFetchWord;
     this.handleFetchDefinition = ::this.handleFetchDefinition;
     this.handleFetchWordAndDefinition = ::this.handleFetchWordAndDefinition;
+    this.handleRepetitiveFetch = ::this.handleRepetitiveFetch;
+    this.handleStopRepetitiveFetch = ::this.handleStopRepetitiveFetch;
   }
 
 
   handleFetchWord() {
-    this.props.fetchRandomWord();
+    this.props.dispatch({ type: 'FETCH_RANDOM_WORD' })
   }
 
 
   handleFetchDefinition() {
-    const { word, fetchDefinition } = this.props;
-
-    if (word.get('word')) {
-      fetchDefinition(word.get('word'));
-    }
+    this.props.dispatch({ type: 'FETCH_WORD_DEFINITION', payload: this.props.word.get('word') })
   }
 
 
   handleFetchWordAndDefinition() {
-    const { fetchRandomWord, fetchDefinition } = this.props;
+    this.props.dispatch({ type: 'FETCH_WORD_AND_DEFINITION' })
+  }
 
-    // chaining thunks in this fashion isn't the worst thing ever
-    fetchRandomWord().then(word => {
-      fetchDefinition(word)
-    })
+
+  handleRepetitiveFetch() {
+    this.props.dispatch({ type: 'START_FETCHING' })
+  }
+
+
+  handleStopRepetitiveFetch() {
+    this.props.dispatch({ type: 'STOP_FETCHING' })
   }
 
 
@@ -69,6 +70,10 @@ class MainContainer extends React.Component {
           { wordContent }
           { definitionContent }
         </div>
+
+        <div>Voodoo stuff</div>
+        <button onClick={ this.handleRepetitiveFetch }>Will it ever stop?</button>
+        <button onClick={ this.handleStopRepetitiveFetch }>Yes, it will</button>
       </div>
     )
   }
@@ -78,10 +83,5 @@ const mapStateToProps = state => ({
   word: state.word,
   definition: state.definition
 })
-const dispatchableActions = {
-  fetchRandomWord,
-  fetchDefinition,
-  fetchRandomWordPlus
-}
 
-export default connect(mapStateToProps, dispatchableActions)(MainContainer)
+export default connect(mapStateToProps)(MainContainer)

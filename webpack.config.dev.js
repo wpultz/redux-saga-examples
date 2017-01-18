@@ -17,6 +17,7 @@ module.exports = {
   devtool: 'source-map',
   entry: {
     app: [
+      'babel-polyfill',
       'webpack-dev-server/client?' + webpackServer,
       'webpack/hot/only-dev-server',
       './redux-saga-examples/app.js'

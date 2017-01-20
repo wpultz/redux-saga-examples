@@ -71,9 +71,11 @@ class MainContainer extends React.Component {
           { definitionContent }
         </div>
 
-        <div>Voodoo stuff</div>
-        <button onClick={ this.handleRepetitiveFetch }>Will it ever stop?</button>
-        <button onClick={ this.handleStopRepetitiveFetch }>Yes, it will</button>
+        <div>
+          <h2>Continuously fetch words</h2>
+          <button onClick={ this.handleRepetitiveFetch }>Will it ever stop?</button>
+          <button onClick={ this.handleStopRepetitiveFetch }>Yes, it will</button>
+        </div>
       </div>
     )
   }

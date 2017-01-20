@@ -1,2 +1,2 @@
-var context = require.context('<%= jsSrcPath %>', true, /.spec\.js$/);
+var context = require.context('./redux-saga-examples/', true, /.spec\.js$/);
 context.keys().forEach(context);

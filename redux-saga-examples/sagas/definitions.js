@@ -1,7 +1,7 @@
 import 'isomorphic-fetch'
 import { call, put, take, cancel, fork, race, takeEvery } from 'redux-saga/effects'
 
-import { fetchRandomWord, fetchDefinition } from '../api'
+import * as api from '../api'
 
 import {
   randomWordRequest, randomWordSuccess, randomWordFailure,
@@ -9,10 +9,18 @@ import {
 } from '../actions'
 
 
+// helper generator to return a promise that resolves after 5 seconds
+// a similar construct is also available in the redux-saga `delay` util
+function* wait(ms) {
+  yield new Promise(resolve => setTimeout(() => resolve(), ms))
+}
+
+
+
 // generator to fetch a random word
-export function* handleFetchRandomWord() {
+function* handleFetchRandomWord() {
   try {
-    const wordResp = yield call(fetchRandomWord)
+    const wordResp = yield call(api.fetchRandomWord)
     yield put(randomWordSuccess(wordResp))
   } catch(err) {
     yield put(randomWordFailure(err))
@@ -39,9 +47,9 @@ export function* doMeDoMe() {
 
 
 // generator to fetch the definition of a word
-export function* handleFetchDefinition(action) {
+function* handleFetchDefinition(action) {
   try {
-    const definition = yield call(fetchDefinition, action.payload)
+    const definition = yield call(api.fetchDefinition, action.payload)
     yield put(definitionSuccess(action.payload, definition))
   } catch(err) {
     yield put(definitionFailure(action.payload, err))
@@ -56,12 +64,12 @@ export function* watchFetchDefinition() {
 
 
 // generator to fetch a random word and then fetch the word's definition
-export function* fetchRandomWordPlus() {
+function* fetchRandomWordPlus() {
   try {
     yield put(randomWordRequest())
 
-    const word = yield call(fetchRandomWord)
-    const definition = yield call(fetchDefinition, word)
+    const word = yield call(api.fetchRandomWord)
+    const definition = yield call(api.fetchDefinition, word)
 
     yield put(definitionSuccess(word, definition))
   } catch(err) {
@@ -76,19 +84,13 @@ export function* watchFetchRandomWordAndDefinition() {
 }
 
 
-// helper generator to return a promise that resolves after 5 seconds
-function* wait(ms) {
-  yield new Promise(resolve => setTimeout(() => resolve(), ms))
-}
-
-
 // generator to continuously call the word + definition generator on a 5 second interval
 function* fetchForever() {
   try {
     while (true) {
-      // the yield* statement delegates the yield to the called generator
-      yield* fetchRandomWordPlus()
-      yield* wait(5000)
+      // the yield statement delegates the yield to the called generator
+      yield fetchRandomWordPlus()
+      yield wait(5000)
     }
   } finally {
     // cancelling this saga from where if was called will break it out of the loop
@@ -97,7 +99,7 @@ function* fetchForever() {
 
 
 // generator to start the word + definition generator on START_FETCHING, and cancel it on STOP_FETCHING
-export function* justKeepFetchingV1() {
+export function* justKeepFetching() {
   while (yield take('START_FETCHING')) {
     // crank up the fetching task as an async task
     const fetchingTask = yield fork(fetchForever)
@@ -115,7 +117,7 @@ export function* justKeepFetchingV1() {
 
 
 // the same as the justKeepFetching generator, but uses a race effect
-export function* justKeepFetching() {
+export function* justKeepFetchingV2() {
   while (true) {
     yield take('START_FETCHING')
 

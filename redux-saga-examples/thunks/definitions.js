@@ -56,3 +56,20 @@ export const fetchRandomWordPlus = () => {
       })
   }
 }
+
+
+export const keepFetchingWords = () => {
+  return (dispatch) => {
+    return dispatch(fetchRandomWordPlus())
+      .then(() => {
+        setTimeout(() => dispatch(keepFetchingWords()), 5000)
+      })
+  }
+}
+
+
+export const stopFetchingWords = () => {
+  return (dispatch) => {
+    // ??????
+  }
+}

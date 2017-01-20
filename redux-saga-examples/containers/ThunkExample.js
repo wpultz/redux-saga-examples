@@ -1,7 +1,13 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { fetchRandomWord, fetchDefinition, fetchRandomWordPlus } from '../thunks/definitions'
+import {
+  fetchRandomWord,
+  fetchDefinition,
+  fetchRandomWordPlus,
+  keepFetchingWords,
+  stopFetchingWords
+} from '../thunks/definitions'
 
 class MainContainer extends React.Component {
   constructor() {
@@ -69,6 +75,12 @@ class MainContainer extends React.Component {
           { wordContent }
           { definitionContent }
         </div>
+
+        <div>
+          <h2>Continuously fetch words</h2>
+          <button onClick={ this.props.keepFetchingWords }>Will it ever stop?</button>
+          <button onClick={ this.props.stopFetchingWords }>Yes, it will</button>
+        </div>
       </div>
     )
   }
@@ -81,7 +93,9 @@ const mapStateToProps = state => ({
 const dispatchableActions = {
   fetchRandomWord,
   fetchDefinition,
-  fetchRandomWordPlus
+  fetchRandomWordPlus,
+  keepFetchingWords,
+  stopFetchingWords
 }
 
 export default connect(mapStateToProps, dispatchableActions)(MainContainer)
